@@ -23,12 +23,12 @@ final class PostsViewController: UIViewController {
             Post(
                 authorName: "Jane",
                 date: Calendar.current.date(byAdding: .day, value: -2, to: Date())!,
-                body: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+                body: "Lorem ipsum dolor sit amet, (555) 555-5555 consectetur adipiscing elit, 1455 Market Street San Francisco CA sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
             ),
             Post(
                 authorName: "John",
                 date: Calendar.current.date(byAdding: .day, value: -2, to: Date())!,
-                body: "Lorem ipsum dolor sit amet, consectetur adipiscing elit!"
+                body: "Lorem ipsum dolor sit amet, consectetur adipiscing elit! 12/12/21"
             ),
         ]
         var entry: Post = Post()
@@ -290,8 +290,18 @@ fileprivate struct FeedItemBody: ProxyElement {
 
             col.add(child: header)
 
-            var body = Label(text: post.body)
-            body.font = UIFont.systemFont(ofSize: 13.0)
+            let body = AttributedLabel(attributedText: .init(string: post.body)) {
+                $0.linkDetectionTypes = [.phoneNumber, .address, .date]
+
+                $0.links = [
+                    .init(
+                        range: NSRange(location: 0, length: 10),
+                        onTap: {
+                            print("Tapped link")
+                        }
+                    ),
+                ]
+            }
 
             col.add(child: body)
         }
