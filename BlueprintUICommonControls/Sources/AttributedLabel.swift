@@ -186,7 +186,25 @@ extension AttributedLabel {
         private func detectDataLinks() {
             detectedLinks = []
 
-            guard let attributedText = attributedText, !linkDetectionTypes.isEmpty else {
+            guard let attributedText = attributedText else {
+                return
+            }
+
+            attributedText.enumerateAttribute(
+                .link,
+                in: attributedText.entireRange,
+                options: []
+            ) { url, range, _ in
+                if let url = url as? URL {
+                    detectedLinks.append(.init(url: url, range: range))
+                } else if let urlString = url as? String,
+                          let url = URL(string: urlString)
+                {
+                    detectedLinks.append(.init(url: url, range: range))
+                }
+            }
+
+            guard !linkDetectionTypes.isEmpty else {
                 return
             }
 
